@@ -1,96 +1,92 @@
-# Завдання 2
-# Створіть клас черги з пріоритетами для роботи із
-# символьними значеннями.
-# Ви маєте створити реалізації для операцій над елементами черги:
-# ■ IsEmpty — перевірка, чи черга пуста;
-# ■ IsFull — перевірка черги на заповнення;
-# ■ InsertWithPriority — додати елемент з пріоритетом у
-# чергу;
+# Завдання 3
+# Розробіть додаток, який дозволяє зберігати інформацію
+# про логіни і паролі користувачів. Кожному користувачеві
+# відповідає пара «логін — пароль». При старті додатку
+# відображається меню:
+# ■ Додати нового користувача;
+# ■ Видалити існуючого користувача;
+# ■ Перевірити, чи існує такий користувач;
+# ■ Змінити логін існуючого користувача;
+# ■ Змінити пароль існуючого користувача.
+# Для реалізації завдання обов’язково застосуйте одну
+# із структур даних. При виборі структури керуйтеся постановкою завдання.
 # Практичне завдання
-# 1
-# ■ PullHighestPriorityElement — видалення елемента з
-# найвищим пріоритетом із черги;
-# ■ Peek — повернення найбільшого за пріоритетом елемента. Зверніть увагу, що елемент не видаляється з
-# черги;
-# ■ Show — відображення на екрані всіх елементів черги.
-# Показуючи елемент, також необхідно вказати і його
-# пріоритет.
-# На старті додатка відобразіть меню, в якому користувач може вибрати необхідну операцію.
 
-class PriorityQueue:
-    def __init__(self, max_size):
-        self.max_size = max_size
-        self.queue = []
+class UserDatabase:
+    def __init__(self):
+        self.users = {}
 
-    def is_empty(self):
-        return len(self.queue) == 0
-
-    def is_full(self):
-        return len(self.queue) == self.max_size
-
-    def insert_with_priority(self, char, priority):
-        if not self.is_full():
-            self.queue.append((char, priority))
-            self.queue.sort(key=lambda x: x[1], reverse=True)
+    def add_user(self, username, password):
+        if username not in self.users:
+            self.users[username] = password
+            print("Користувача успішно додано.")
         else:
-            print("Черга повна")
+            print("Користувач з таким логіном вже існує.")
 
-    def pull_highest_priority_element(self):
-        if not self.is_empty():
-            return self.queue.pop(0)
+    def delete_user(self, username):
+        if username in self.users:
+            del self.users[username]
+            print("Користувача успішно видалено.")
         else:
-            print("Черга порожня")
-            return None
+            print("Користувач з таким логіном не існує.")
 
-    def peek(self):
-        if not self.is_empty():
-            return self.queue[0]
+    def check_user(self, username):
+        if username in self.users:
+            print("Користувач з таким логіном існує.")
         else:
-            print("Черга порожня")
-            return None
+            print("Користувача з таким логіном не існує.")
 
-    def show(self):
-        print("Елементи черги з пріоритетами:")
-        for char, priority in self.queue:
-            print(f"Елемент: {char}, Пріоритет: {priority}")
+    def change_username(self, old_username, new_username):
+        if old_username in self.users:
+            self.users[new_username] = self.users.pop(old_username)
+            print("Логін користувача успішно змінено.")
+        else:
+            print("Користувача з таким логіном не існує.")
+
+    def change_password(self, username, new_password):
+        if username in self.users:
+            self.users[username] = new_password
+            print("Пароль користувача успішно змінено.")
+        else:
+            print("Користувача з таким логіном не існує.")
 
 def display_menu():
     print("Меню:")
-    print("1. Перевірити, чи черга порожня")
-    print("2. Перевірити, чи черга повна")
-    print("3. Додати елемент з пріоритетом до черги")
-    print("4. Видалити елемент з найвищим пріоритетом з черги")
-    print("5. Подивитися найбільш пріоритетний елемент")
-    print("6. Відобразити елементи черги")
+    print("1. Додати нового користувача")
+    print("2. Видалити існуючого користувача")
+    print("3. Перевірити, чи існує такий користувач")
+    print("4. Змінити логін існуючого користувача")
+    print("5. Змінити пароль існуючого користувача")
     print("0. Вихід")
 
-max_size = 5
-priority_queue = PriorityQueue(max_size)
+user_db = UserDatabase()
 
 while True:
     display_menu()
     choice = input("Оберіть операцію: ")
 
     if choice == '1':
-        print("Черга порожня:", priority_queue.is_empty())
+        username = input("Введіть логін нового користувача: ")
+        password = input("Введіть пароль нового користувача: ")
+        user_db.add_user(username, password)
     elif choice == '2':
-        print("Черга повна:", priority_queue.is_full())
+        username = input("Введіть логін користувача для видалення: ")
+        user_db.delete_user(username)
     elif choice == '3':
-        char = input("Введіть символ для додавання до черги: ")
-        priority = int(input("Введіть пріоритет: "))
-        priority_queue.insert_with_priority(char, priority)
+        username = input("Введіть логін користувача для перевірки: ")
+        user_db.check_user(username)
     elif choice == '4':
-        pulled_element = priority_queue.pull_highest_priority_element()
-        if pulled_element is not None:
-            print(f"Видалений елемент з найвищим пріоритетом: {pulled_element[0]}, Пріоритет: {pulled_element[1]}")
+        old_username = input("Введіть старий логін користувача: ")
+        new_username = input("Введіть новий логін користувача: ")
+        user_db.change_username(old_username, new_username)
     elif choice == '5':
-        highest_priority_element = priority_queue.peek()
-        if highest_priority_element is not None:
-            print(f"Найбільш пріоритетний елемент: {highest_priority_element[0]}, Пріоритет: {highest_priority_element[1]}")
-    elif choice == '6':
-        priority_queue.show()
+        username = input("Введіть логін користувача: ")
+        new_password = input("Введіть новий пароль для користувача: ")
+        user_db.change_password(username, new_password)
     elif choice == '0':
         print("Дякую за користування! Завершення програми.")
         break
     else:
         print("Некоректний вибір. Спробуйте ще раз.")
+
+
